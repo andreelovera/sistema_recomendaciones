@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Resultado de Recomendaciones</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Recomendaciones</h1>
+    <table>
+        <tr>
+            <th>Titulo</th>
+            <th>Genero</th>
+            <th>Año</th>
+        </tr>
+        {% for rec in recomendaciones %}
+            <tr>
+                <td>{{ rec['title'] }}</td>
+                <td>{{ rec['genres'] }}</td>
+                <td>{{ rec['year'] }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <a href="{{ url_for('index') }}">Volver Atras</a>
+</body>
+</html>

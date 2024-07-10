@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sistema de Recomendaciones</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script>
+        function fetchMovieDetails(movieId) {
+            fetch(`/get_movie/${movieId}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('nuevo_nombre').value = data.title;
+                    document.getElementById('nuevo_genero').value = data.genres;
+                });
+        }
+
+        function updateMovieIdInput(movieId) {
+            document.getElementById('movie_id').value = movieId;
+        }
+    </script>
+</head>
+<body>
+    <h1>Peliculas Recomendadas</h1>
+    <form action="{{ url_for('edit') }}" method="post">
+        <label for="movie_id">Codigo Pelicula:</label>
+        <select id="movie_id_select" onchange="fetchMovieDetails(this.value); updateMovieIdInput(this.value);">
+            <option value="">Seleccionar Codigo</option>
+            {% for movie_id in movie_ids %}
+                <option value="{{ movie_id }}">{{ movie_id }}</option>
+            {% endfor %}
+        </select>
+        <input type="text" id="movie_id" name="movie_id" required readonly>
+        <label for="nuevo_nombre">Nombre Pelicula:</label>
+        <input type="text" id="nuevo_nombre" name="nuevo_nombre">
+        <label for="nuevo_genero">Genero:</label>
+        <select id="nuevo_genero" name="nuevo_genero">
+            <option value="">Seleccionar Genero</option>
+            {% for genre in genres %}
+                <option value="{{ genre }}">{{ genre }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Editar</button>
+    </form>
+    <form action="{{ url_for('recommend') }}" method="post">
+        <label for="recommend_movie_id">Recomendaciones:</label>
+        <select id="recommend_movie_id" name="movie_id" required>
+            <option value="">Seleccionar Codigo</option>
+            {% for movie_id in movie_ids %}
+                <option value="{{ movie_id }}">{{ movie_id }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Buscar</button>
+    </form>
+    <h2>Lista de Peliculas</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Codigo</th>
+                <th>Nombre</th>
+                <th>Genero</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for movie in movies[:20] %}
+            <tr>
+                <td>{{ movie['movieId'] }}</td>
+                <td>{{ movie['title'] }}</td>
+                <td>{{ movie['genres'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
